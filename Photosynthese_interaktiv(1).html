@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Wie lebt eine Pflanze? – Interaktive Animation</title>
+<style>
+:root{color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:#101010;color:#f5f5f5;font-family:Arial,Helvetica,sans-serif}
+.wrap{max-width:1100px;margin:auto;padding:18px}
+h1{font-size:clamp(22px,3vw,34px);margin:0 0 6px}
+.sub{color:#c9c9c9;margin:0 0 14px}
+.controls{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+button{background:#2b2b2b;color:white;border:1px solid #555;border-radius:9px;padding:10px 14px;font-size:15px;cursor:pointer}
+button:hover{background:#393939}
+button.active{outline:2px solid #ddd}
+.panel{background:#181818;border:1px solid #444;border-radius:14px;overflow:hidden}
+svg{display:block;width:100%;height:auto}
+.info{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.card{background:#1d1d1d;border:1px solid #444;border-radius:10px;padding:12px;line-height:1.45}
+.scene{opacity:.14;transition:opacity .6s ease}
+.scene.active{opacity:1}
+.plant{transform-origin:500px 420px;animation:sway 4s ease-in-out infinite alternate}
+.paused .plant{animation-play-state:paused}
+@keyframes sway{from{transform:rotate(-.8deg)}to{transform:rotate(.8deg)}}
+@media(max-width:650px){.info{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.plant{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+<h1>Wie lebt eine Pflanze?</h1>
+<p class="sub" id="desc">Ein kleiner automatisch ablaufender Lehrfilm über Photosynthese und Pflanzenatmung.</p>
+<div class="controls">
+<button id="play">⏸ Pause</button><button id="restart">↻ Neu starten</button>
+<button data-step="0">Pflanze</button><button data-step="1">Licht</button><button data-step="2">CO₂</button>
+<button data-step="3">Wurzeln</button><button data-step="4">Photosynthese</button><button data-step="5">Atmung</button>
+</div>
+<div class="panel">
+<svg id="viz" viewBox="0 0 1000 650" aria-label="Animierte Pflanze mit Photosynthese und Atmung">
+<defs>
+<radialGradient id="bg"><stop stop-color="#292929"/><stop offset="1" stop-color="#101010"/></radialGradient>
+<linearGradient id="soil" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#83552f"/><stop offset="1" stop-color="#301b11"/></linearGradient>
+<linearGradient id="stem"><stop stop-color="#347b2b"/><stop offset=".45" stop-color="#91dc4d"/><stop offset="1" stop-color="#286827"/></linearGradient>
+<radialGradient id="leaf" cx="35%" cy="30%"><stop stop-color="#b6ef69"/><stop offset=".45" stop-color="#70c446"/><stop offset="1" stop-color="#21682a"/></radialGradient>
+<filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<rect width="1000" height="650" fill="url(#bg)"/>
+<rect y="420" width="1000" height="230" fill="url(#soil)"/>
+<path d="M0 424 Q120 405 230 424 T460 420 T700 423 T1000 420" fill="#75502e" stroke="#a87c4d" stroke-width="5"/>
+<g class="plant">
+<path d="M500 424 C495 345 501 255 500 105" stroke="url(#stem)" stroke-width="18" fill="none" stroke-linecap="round"/>
+<path d="M498 330 Q447 300 390 260 M500 275 Q555 245 612 205 M500 215 Q450 190 412 150 M501 170 Q545 135 575 92" stroke="#519d35" stroke-width="10" fill="none"/>
+<g fill="url(#leaf)" stroke="#9cdc5a" stroke-width="2">
+<path d="M392 260 C325 275 285 228 291 188 C350 180 400 210 392 260Z"/>
+<path d="M611 205 C680 218 725 175 723 132 C656 122 606 154 611 205Z"/>
+<path d="M413 151 C357 153 325 115 333 76 C386 76 423 108 413 151Z"/>
+<path d="M574 93 C621 65 629 27 608 9 C563 32 545 68 574 93Z"/>
+<path d="M499 330 C552 313 592 340 595 380 C544 390 505 369 499 330Z"/>
+</g></g>
+<g stroke="#d8bc89" fill="none" stroke-linecap="round">
+<path d="M500 420 Q462 470 432 570 M500 420 Q535 474 570 575 M500 420 Q500 500 500 615 M486 455 Q430 475 385 530 M515 457 Q575 480 625 530" stroke-width="8"/>
+<path d="M432 570 l-38 40 M570 575 l40 36 M500 615 l-15 28 M385 530 l-35 25 M625 530 l40 26" stroke-width="4"/>
+</g>
+<g font-family="Arial,sans-serif" fill="#fff">
+<g id="sun" class="scene"><text x="55" y="65" font-size="29" font-weight="700">☀ Sonnenlicht</text><path id="sunP" d="M205 75 Q330 110 430 155" stroke="#ffd23e" stroke-width="7" fill="none"/><polygon points="430,155 405,145 412,172" fill="#ffd23e"/><circle r="10" fill="#ffd23e" filter="url(#glow)"><animateMotion dur="1.8s" repeatCount="indefinite"><mpath href="#sunP"/></animateMotion></circle><circle r="10" fill="#ffd23e"><animateMotion begin="-.9s" dur="1.8s" repeatCount="indefinite"><mpath href="#sunP"/></animateMotion></circle></g>
+<g id="co2" class="scene"><text x="55" y="205" font-size="29" font-weight="700">CO₂ aus der Luft</text><path id="co2P" d="M225 215 Q315 215 390 235" stroke="#ff5757" stroke-width="7" fill="none"/><polygon points="390,235 365,222 367,249" fill="#ff5757"/><circle r="10" fill="#ff5757"><animateMotion dur="1.7s" repeatCount="indefinite"><mpath href="#co2P"/></animateMotion></circle><circle r="10" fill="#ff5757"><animateMotion begin="-.85s" dur="1.7s" repeatCount="indefinite"><mpath href="#co2P"/></animateMotion></circle></g>
+<g id="water" class="scene"><text x="55" y="485" font-size="28" font-weight="700">💧 Wasser</text><path id="waterP" d="M185 495 Q315 490 430 525" stroke="#4aa6ff" stroke-width="7" fill="none"/><polygon points="430,525 405,510 407,538" fill="#4aa6ff"/><circle r="10" fill="#4aa6ff"><animateMotion dur="1.8s" repeatCount="indefinite"><mpath href="#waterP"/></animateMotion></circle><circle r="10" fill="#4aa6ff"><animateMotion begin="-.9s" dur="1.8s" repeatCount="indefinite"><mpath href="#waterP"/></animateMotion></circle></g>
+<g id="minerals" class="scene"><text x="55" y="585" font-size="25" font-weight="700">◆ Mineralstoffe</text><path id="minP" d="M235 590 Q330 575 435 555" stroke="#efa63f" stroke-width="7" fill="none"/><polygon points="435,555 410,548 416,573" fill="#efa63f"/><circle r="10" fill="#efa63f"><animateMotion dur="2s" repeatCount="indefinite"><mpath href="#minP"/></animateMotion></circle><circle r="10" fill="#efa63f"><animateMotion begin="-1s" dur="2s" repeatCount="indefinite"><mpath href="#minP"/></animateMotion></circle></g>
+<g id="products" class="scene"><text x="730" y="105" font-size="27" font-weight="700">O₂ Sauerstoff</text><text x="730" y="132" font-size="17">geht in die Luft</text><path id="o2P" d="M590 150 Q680 125 770 145" stroke="#5cdb7d" stroke-width="7" fill="none"/><polygon points="770,145 746,131 745,157" fill="#5cdb7d"/><circle r="10" fill="#5cdb7d"><animateMotion dur="1.8s" repeatCount="indefinite"><mpath href="#o2P"/></animateMotion></circle><circle r="10" fill="#5cdb7d"><animateMotion begin="-.9s" dur="1.8s" repeatCount="indefinite"><mpath href="#o2P"/></animateMotion></circle><text x="730" y="245" font-size="27" font-weight="700">Glukose</text><text x="730" y="272" font-size="17">Zucker – Nahrung der Pflanze</text></g>
+<g id="breath" class="scene"><text x="710" y="410" font-size="25" font-weight="700">O₂ aus der Bodenluft</text><text x="710" y="438" font-size="17">für die Atmung der Wurzeln</text><path id="airP" d="M800 470 Q680 480 570 520" stroke="#9cddff" stroke-width="7" fill="none"/><polygon points="570,520 593,501 600,527" fill="#9cddff"/><circle r="10" fill="#9cddff"><animateMotion dur="1.8s" repeatCount="indefinite"><mpath href="#airP"/></animateMotion></circle><circle r="10" fill="#9cddff"><animateMotion begin="-.9s" dur="1.8s" repeatCount="indefinite"><mpath href="#airP"/></animateMotion></circle><text x="715" y="335" font-size="23" font-weight="700">Auch die Blätter atmen.</text></g>
+</g>
+</svg>
+</div>
+<div class="info"><div class="card"><b id="title">1. Unsere Pflanze</b><br><span id="text">Eine Pflanze braucht mehrere Dinge zum Leben und Wachsen.</span></div><div class="card"><b id="formula">Eine Pflanze braucht Licht, Wasser, Luft und Mineralstoffe.</b></div></div>
+</div>
+<script>
+(()=>{const app=document.getElementById('app'),svg=document.getElementById('viz'),play=document.getElementById('play'),restart=document.getElementById('restart'),title=document.getElementById('title'),text=document.getElementById('text'),formula=document.getElementById('formula');
+const groups=[[],['sun'],['sun','co2'],['sun','co2','water','minerals'],['sun','co2','water','minerals','products'],['sun','co2','water','minerals','products','breath']];
+const titles=['1. Unsere Pflanze','2. Die Sonne liefert Energie','3. Die Blätter nehmen CO₂ auf','4. Die Wurzeln versorgen die Pflanze','5. Photosynthese','6. Die Pflanze atmet'];
+const texts=['Eine Pflanze braucht mehrere Dinge zum Leben und Wachsen.','Sonnenlicht liefert die Energie für die Photosynthese.','Kohlendioxid aus der Luft gelangt über die Blätter in die Pflanze.','Die Wurzeln nehmen Wasser und Mineralstoffe aus dem Boden auf.','Mit Licht, Wasser und CO₂ bildet die Pflanze Glukose. Sauerstoff wird abgegeben.','Die Pflanze atmet Tag und Nacht. Auch ihre Wurzeln brauchen Sauerstoff aus der Bodenluft.'];
+const formulas=['Licht • Wasser • Luft • Mineralstoffe','☀ Licht liefert Energie.','CO₂ → Blätter','Wasser + Mineralstoffe → Wurzeln','Licht + Wasser + CO₂ → Glukose + O₂','Zellatmung findet Tag und Nacht statt.'];
+let step=0,paused=false,timer;
+function show(n){step=Math.max(0,Math.min(5,n));document.querySelectorAll('.scene').forEach(x=>x.classList.remove('active'));groups[step].forEach(id=>document.getElementById(id).classList.add('active'));title.textContent=titles[step];text.textContent=texts[step];formula.textContent=formulas[step];document.querySelectorAll('[data-step]').forEach(b=>b.classList.toggle('active',Number(b.dataset.step)===step))}
+function schedule(){clearInterval(timer);if(!paused)timer=setInterval(()=>show(step===5?0:step+1),5000)}
+function pause(p){paused=p;app.classList.toggle('paused',p);if(p){svg.pauseAnimations();play.textContent='▶ Weiter';clearInterval(timer)}else{svg.unpauseAnimations();play.textContent='⏸ Pause';schedule()}}
+play.addEventListener('click',()=>pause(!paused));restart.addEventListener('click',()=>{show(0);pause(false)});document.querySelectorAll('[data-step]').forEach(b=>b.addEventListener('click',()=>{show(Number(b.dataset.step));schedule()}));show(0);schedule();
+})();
+</script>
+</body></html>
